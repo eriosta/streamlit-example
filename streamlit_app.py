@@ -12,7 +12,7 @@ st.set_page_config(
      initial_sidebar_state="expanded",
      menu_items={
          'Get Help': 'https://github.com/eriosta/streamlit-example',
-         'Report a bug': "Coming soon",
+         'Report a bug': "https://github.com/eriosta/streamlit-example",
          'About': "# This is a header. This is an *extremely* cool app!"
      }
 )
