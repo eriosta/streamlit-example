@@ -273,6 +273,6 @@ else:
         st.sidebar.download_button(
                 label="Download Sample Data and Use It",
                 data=f,
-                file_name='smaple_data.zip',
+                file_name='sample_data.zip',
                 help = "Download some sample data and use it to explore this web app."
             )
