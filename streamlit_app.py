@@ -6,18 +6,18 @@ import numpy as np
 import pandas as pd
 
 st.set_page_config(
-     page_title="Data Analysis Web App",
+     page_title="POC App",
      page_icon="🧊",
      layout="wide",
      initial_sidebar_state="expanded",
      menu_items={
-         'Get Help': 'https://github.com/everydaycodings/Data-Analysis-Web-App',
-         'Report a bug': "https://github.com/everydaycodings/Data-Analysis-Web-App/issues/new",
+         'Get Help': 'https://github.com/eriosta/streamlit-example',
+         'Report a bug': "Coming soon",
          'About': "# This is a header. This is an *extremely* cool app!"
      }
 )
 
-st.sidebar.title("Data Analysis Web App")
+st.sidebar.title("POC APP")
 
 file_format_type = ["csv", "txt", "xls", "xlsx", "ods", "odt"]
 functions = ["Overview", "Outliers", "Drop Columns", "Drop Categorical Rows", "Drop Numeric Rows", "Rename Columns", "Display Plot", "Handling Missing Data", "Data Wrangling"]
@@ -41,7 +41,7 @@ if uploaded_file is not None:
     
     describe, shape, columns, num_category, str_category, null_values, dtypes, unique, str_category, column_with_null_values = describe(data)
 
-    multi_function_selector = st.sidebar.multiselect("Enter Name or Select the Column which you Want To Plot: ",functions, default=["Overview"])
+    multi_function_selector = st.sidebar.multiselect("What would you like to do with your data?: ",functions, default=["Overview"])
 
     st.subheader("Dataset Preview")
     st.dataframe(data)
