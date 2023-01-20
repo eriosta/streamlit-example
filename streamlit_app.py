@@ -196,24 +196,30 @@ if uploaded_file is not None:
             st.bar_chart(bar_plot)
 
 # ====================================================================================================================    
-
+## TODO: Customize Handling Missing Data functionality
     if "Handling Missing Data" in multi_function_selector:
-        handling_missing_value_option = st.radio("Select What you want to do", ("Drop Null Values", "Filling in Missing Values"))
+        HANDLING_MISSING_VALUE_OPTION = st.radio( 
+            "Select What you want to do",
+             ("Drop missing values",
+              "Manually fill in missing values",
+              "Replace missing values with the mean",
+              "Perform KNN imputation"
+              ))
 
-        if handling_missing_value_option == "Drop Null Values":
+        if HANDLING_MISSING_VALUE_OPTION == "Drop missing values":
 
-            drop_null_values_option = st.radio("Choose your option as suted: ", ("Drop all null value rows", "Only Drop Rows that contanines all null values"))
+            drop_null_values_option = st.radio("Choose your option as suited: ", ("Drop all null value rows", "Only drop rows that contains all null values"))
             droped_null_value = handling_missing_values(data, drop_null_values_option)
             st.write(droped_null_value)
             export_rename_column = download_data(droped_null_value, label="fillna_column")
         
-        elif handling_missing_value_option == "Filling in Missing Values":
+        elif HANDLING_MISSING_VALUE_OPTION == "Manually fill in missing values":
             
             if 'missing_dict' not in st.session_state:
                 st.session_state.missing_dict = {}
             
-            fillna_column_selector = st.selectbox("Please Select or Enter a column Name you want to fill the NaN Values: ", options=column_with_null_values)
-            fillna_text_data = st.text_input("Enter the New Value for the {} Column NaN Value".format(fillna_column_selector), max_chars=50)
+            fillna_column_selector = st.selectbox("Please select or enter the name of the column with NaN values: ", options=column_with_null_values)
+            fillna_text_data = st.text_input("Enter the new value for the {} column with NaN values".format(fillna_column_selector), max_chars=50)
 
             if st.button("Draft Changes", help="when you want to fill multiple columns/single column null values so first you have to click Save Draft button this updates the data and then press Rename Columns Button."):     
                 
@@ -229,10 +235,17 @@ if uploaded_file is not None:
 
             if st.button("Apply Changes", help="Takes your data and Fill NaN Values for columns as your wish."):
 
-                fillna_column = handling_missing_values(data,handling_missing_value_option, st.session_state.missing_dict)
+                fillna_column = handling_missing_values(data,HANDLING_MISSING_VALUE_OPTION, st.session_state.missing_dict)
                 st.write(fillna_column)
                 export_rename_column = download_data(fillna_column, label="fillna_column")
                 st.session_state.missing_dict = {}
+        
+        # elif replace with mean
+        elif HANDLING_MISSING_VALUE_OPTION == "Replace missing values with the mean":
+            pass
+        elif HANDLING_MISSING_VALUE_OPTION == "Perform KNN imputation":
+            pass
+        # elif missing data imputation, KNN
 
 # ==========================================================================================================================================
 
