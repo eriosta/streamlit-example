@@ -162,3 +162,28 @@ def clear_image_cache():
     removing_files = glob.glob('temp/*.png')
     for i in removing_files:
         os.remove(i)
+        
+def add_signification_inputs(columns):
+    if 'n_rows' not in st.session_state:
+        st.session_state.n_rows = 1
+
+    add = st.button(label="Add inputs")
+
+    if add:
+        st.session_state.n_rows += 1
+        st.experimental_rerun()
+
+    index = 0
+    
+    for _ in range(st.session_state.n_rows):
+        
+        column_name, condition, value, signification = st.columns(4)
+        column_name.selectbox("Select a column:", columns, key=f'input{index}')
+        index += 1
+        condition.selectbox("Select the condition:", ["=", "<", ">", "<=", ">="], key=f'input{index}') 
+        index += 1
+        value.text_input("Insert a value", key=f'input{index}')
+        index += 1
+        signification.text_input("Add a signification", key=f'input{index}')
+        index += 1
+
