@@ -275,7 +275,16 @@ if uploaded_file is not None:
                 concatenating_data = data_wrangling(data, second_data, None, data_wrangling_option)
                 st.write(concatenating_data)
                 download_data(concatenating_data, label="concatenating_on_axis")
+ # ==========================================================================================================================================
+               
+        if "Add Signification" in multi_function_selector:
         
+             st.write(data)
+
+             add_signification_inputs(data.columns)
+
+             st.button("Save")
+
 # ==========================================================================================================================================
     st.sidebar.info("After using this app please Click Clear Cache button so that your all data is removed from the folder.")
     if st.sidebar.button("Clear Cache"):
