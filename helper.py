@@ -12,7 +12,6 @@ from numpy import nan
 excel_type =["vnd.ms-excel","vnd.openxmlformats-officedocument.spreadsheetml.sheet", "vnd.oasis.opendocument.spreadsheet", "vnd.oasis.opendocument.text"]
 input_significations = []
 data_to_parse = None
-all_significations = []
 
 def data(data, file_type, seperator=None):
     global data_to_parse
@@ -183,8 +182,7 @@ def add_signification_inputs(columns):
 
     index = 0
     input_significations = {}
-    for col in columns:
-        input_significations[col] = []
+
 
     for _ in range(st.session_state.n_rows):
         
@@ -205,64 +203,58 @@ def add_signification_inputs(columns):
 
         with col4:
             signification = st.text_input("Add a signification", key=f'input{index}')
-            all_significations.append((signification, column_name))
-
             index += 1
 
-        
-      
 
-        input_significations[column_name].append(
-            {
+        input_significations[signification] = {
             "condition": condition, 
             "value": value, 
-            "signification": signification
+            "column": column_name
         }
-        )
+        
     
             
 
-def get_signfication(value_to_test, column_name):
-    for conditions in input_significations[column_name]:
+def get_signfication(value_to_test, condition, value):
         
-        condition = conditions['condition']
-        value = conditions['value']
-        signification = conditions['signification']
-
-        if type(value_to_test) != str:
-            if eval(str(value_to_test) + condition + str(value)):
-                return signification
-        else:
-            if condition == '==':
-                if value == value_to_test:
-                    return signification
-            elif condition == '!=':
-                if value != value_to_test:
-                    return signification
+    if type(value_to_test) != str:
+        return eval(str(value_to_test) + condition + str(value))
+    else:
+        if condition == '==':
+            return value == value_to_test
+        elif condition == '!=':
+            return value != value_to_test
 
     return None
 
 
 
+@st.experimental_memo
+def convert_df(df):
+   return df.to_csv(index=False).encode('utf-8')
 
 
 
-    
 
 def save_significations():
     new_data = {}
 
-    for sig, col in all_significations:
+    for name, sig in input_significations.items():
+        col = sig['column']
         after = []
-        print(col)
         for value in data_to_parse[col]:
-            print(type(value), value)
+            
             if not pd.isna(value):
-                after.append(get_signfication(value, col))
+                after.append(get_signfication(value, sig['condition'], sig['value']))
             else:
                 after.append(None)
 
-        new_data[sig] = after
+        new_data[name] = after
 
-    return new_data
+    df = pd.DataFrame(new_data)
+    return convert_df(df)
+
+    
+
+
     
