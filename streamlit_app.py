@@ -282,9 +282,12 @@ if uploaded_file is not None:
         st.write(data)
 
         add_signification_inputs(data.columns)
+        csv = ''
 
-        if st.button("Download CSV file"):
-            new_data = save_significations()
+        if st.button("Save"):
+            csv = save_significations()
+
+        st.download_button("Press to Download",csv,"file.csv","text/csv",key='download-csv')
 
 # ==========================================================================================================================================
     st.sidebar.info("After using this app please Click Clear Cache button so that your all data is removed from the folder.")
