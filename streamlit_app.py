@@ -20,7 +20,7 @@ st.set_page_config(
 st.sidebar.title("POC APP")
 
 file_format_type = ["csv", "txt", "xls", "xlsx", "ods", "odt"]
-functions = ["Overview", "Outliers", "Drop Columns", "Drop Categorical Rows", "Drop Numeric Rows", "Rename Columns", "Display Plot", "Handling Missing Data", "Data Wrangling"]
+functions = ["Overview", "Outliers", "Drop Columns", "Drop Categorical Rows", "Drop Numeric Rows", "Rename Columns", "Display Plot", "Handling Missing Data", "Data Wrangling", "Add Signification]
 excel_type =["vnd.ms-excel","vnd.openxmlformats-officedocument.spreadsheetml.sheet", "vnd.oasis.opendocument.spreadsheet", "vnd.oasis.opendocument.text"]
 
 uploaded_file = st.sidebar.file_uploader("Upload Your file", type=file_format_type)
