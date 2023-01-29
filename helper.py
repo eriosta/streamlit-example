@@ -5,12 +5,17 @@ import seaborn as sns
 import streamlit as st
 import datetime, pytz
 import glob, os
+from numpy import nan
+
 
 
 excel_type =["vnd.ms-excel","vnd.openxmlformats-officedocument.spreadsheetml.sheet", "vnd.oasis.opendocument.spreadsheet", "vnd.oasis.opendocument.text"]
-
+input_significations = []
+data_to_parse = None
+all_significations = []
 
 def data(data, file_type, seperator=None):
+    global data_to_parse
 
     if file_type == "csv":
         data = pd.read_csv(data)
@@ -28,7 +33,8 @@ def data(data, file_type, seperator=None):
             data = pd.read_table(data, sep=seperator)
         except ValueError:
             st.info("If you haven't Type the separator then dont worry about the error this error will go as you type the separator value and hit Enter.")
-
+    
+    data_to_parse = data
     return data
 
 def seconddata(data, file_type, seperator=None):
@@ -164,26 +170,99 @@ def clear_image_cache():
         os.remove(i)
         
 def add_signification_inputs(columns):
+    global input_significations, all_significations
+    
     if 'n_rows' not in st.session_state:
         st.session_state.n_rows = 1
 
     add = st.button(label="Add inputs")
 
     if add:
-        st.session_state.n_rows += 1
+        st.session_state.n_rows = st.session_state.n_rows + 1
         st.experimental_rerun()
 
     index = 0
-    
+    input_significations = {}
+    for col in columns:
+        input_significations[col] = []
+
     for _ in range(st.session_state.n_rows):
         
-        column_name, condition, value, signification = st.columns(4)
-        column_name.selectbox("Select a column:", columns, key=f'input{index}')
-        index += 1
-        condition.selectbox("Select the condition:", ["=", "<", ">", "<=", ">="], key=f'input{index}') 
-        index += 1
-        value.text_input("Insert a value", key=f'input{index}')
-        index += 1
-        signification.text_input("Add a signification", key=f'input{index}')
-        index += 1
+        
+        col1, col2, col3, col4 = st.columns([1,1,1,1])
+        with col1:
+            column_name = st.selectbox("Select a column:", columns, key=f'input{index}')
+            index += 1
 
+        with col2:
+            condition = st.selectbox("Select the condition:", ["==", "<", ">", "<=", ">="], key=f'input{index}') 
+            
+            index += 1
+
+        with col3:
+            value = st.text_input("Insert a value", key=f'input{index}')
+            index += 1
+
+        with col4:
+            signification = st.text_input("Add a signification", key=f'input{index}')
+            all_significations.append((signification, column_name))
+
+            index += 1
+
+        
+      
+
+        input_significations[column_name].append(
+            {
+            "condition": condition, 
+            "value": value, 
+            "signification": signification
+        }
+        )
+    
+            
+
+def get_signfication(value_to_test, column_name):
+    for conditions in input_significations[column_name]:
+        
+        condition = conditions['condition']
+        value = conditions['value']
+        signification = conditions['signification']
+
+        if type(value_to_test) != str:
+            if eval(str(value_to_test) + condition + str(value)):
+                return signification
+        else:
+            if condition == '==':
+                if value == value_to_test:
+                    return signification
+            elif condition == '!=':
+                if value != value_to_test:
+                    return signification
+
+    return None
+
+
+
+
+
+
+    
+
+def save_significations():
+    new_data = {}
+
+    for sig, col in all_significations:
+        after = []
+        print(col)
+        for value in data_to_parse[col]:
+            print(type(value), value)
+            if not pd.isna(value):
+                after.append(get_signfication(value, col))
+            else:
+                after.append(None)
+
+        new_data[sig] = after
+
+    return new_data
+    
