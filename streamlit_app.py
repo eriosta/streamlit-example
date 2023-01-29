@@ -1,7 +1,7 @@
 from cmath import nan
 from datetime import date
 import streamlit as st
-from helper import data, seconddata, match_elements, describe, outliers, drop_items, download_data, filter_data, num_filter_data, rename_columns, clear_image_cache, handling_missing_values, data_wrangling
+from helper import *
 import numpy as np
 import pandas as pd
 
@@ -20,7 +20,7 @@ st.set_page_config(
 st.sidebar.title("POC APP")
 
 file_format_type = ["csv", "txt", "xls", "xlsx", "ods", "odt"]
-functions = ["Overview", "Outliers", "Drop Columns", "Drop Categorical Rows", "Drop Numeric Rows", "Rename Columns", "Display Plot", "Handling Missing Data", "Data Wrangling"]
+functions = ["Overview", "Outliers", "Drop Columns", "Drop Categorical Rows", "Drop Numeric Rows", "Rename Columns", "Display Plot", "Handling Missing Data", "Data Wrangling", "Add Signification"]
 excel_type =["vnd.ms-excel","vnd.openxmlformats-officedocument.spreadsheetml.sheet", "vnd.oasis.opendocument.spreadsheet", "vnd.oasis.opendocument.text"]
 
 uploaded_file = st.sidebar.file_uploader("Upload Your file", type=file_format_type)
@@ -277,13 +277,14 @@ if uploaded_file is not None:
                 download_data(concatenating_data, label="concatenating_on_axis")
  # ==========================================================================================================================================
                
-        if "Add Signification" in multi_function_selector:
-        
-             st.write(data)
+    if "Add Signification" in multi_function_selector:
+    
+        st.write(data)
 
-             add_signification_inputs(data.columns)
+        add_signification_inputs(data.columns)
 
-             st.button("Save")
+        if st.button("Download CSV file"):
+            new_data = save_significations()
 
 # ==========================================================================================================================================
     st.sidebar.info("After using this app please Click Clear Cache button so that your all data is removed from the folder.")
